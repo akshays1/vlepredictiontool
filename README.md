@@ -1,2 +1,2 @@
 # vlepredictiontool
-Python code that uses latest mixing rules to predict solve vapour-liquid equilibria
+Python code that uses latest mixing rules to predict vapour-liquid equilibria
