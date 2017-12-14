@@ -1,0 +1,30 @@
+benzene													
+MolecularWeight    		78.11											
+CriticalTemperature	562.05	units: 	K										
+CriticalPressure	4895000	units:	Pa										
+CriticalVolume	0.256	units: 	m3/kmol										
+AcentricFactor	0.2103												
+EnthalpyFormation	82880000	units: 	J/kmol										
+EntropyFormation	269300	units:	J/kmolK										
+GibbsEnergyFormation	129600000	units: 	J/kmol										
+FreezingPoint	278.66	units:	K										
+ReferenceTemperature   298.16   units:  K													
+EntropyReference    0  units:J/K/mol													
+NormalBoilingPoint	353.26	units:	K										
+VL	0.12361216	units: 	m3/kmol										
+VapourPressure		5	units:	vp in Pa.  T in K.  There are 5 parameters									
+83.107	-6486.2	-9.2194	6.98E-06	2	units:	vp parameters:		exp(c1+c2/T+c3*ln(T)+c4*T^c5)					
+278.68	4760	units: 	Tmin and vp at Tmin respectively										
+562.05	4875000	units:	Tmax and vp at Tmax respectively										
+LiquidDensity		4	units:	density in kmol/m3. T in K. There are 4 parameters									
+1.0259	0.26666	562.05	0.28394	units:	density parameters			c1/c2^(1+(1-T/c3)^c4)					
+278.68	11.422	units:	Tmin and d at Tmin										
+562.05	3.8472	units:	Tmax and d at Tmax										
+EnthalpyVapourization 	4	units:	"T in K, Hvap in J/kmol"										
+45346000	0.39053	0	0	units: 	Hvap parameters 		c1*(1-Tr)^(c2+c3*Tr+c4*Tr*Tr)			Tr=T/Tc			
+278.68	34705000	units:	Tmin and Hvap at Tmin										
+562.05	0	units:	Tmax and Hvap at Tmax										
+SpecificHeatCapacity	5	units:	Cp in J/kmolK. T in K. There are 5 parameters 										
+44767	230850	1479.2	168360	677.66	units: 	 Cp parameters		c1+c2*((c3/T)/sinh(c3/T))^2+c4*((c5/T)/cosh(c5/T))^2					
+200	53580	units:	Tmin and Cp at Tmin										
+1500	241570	units:	Tmax and Cp at Tmax										

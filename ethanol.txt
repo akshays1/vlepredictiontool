@@ -1,0 +1,29 @@
+ethanol						
+MolecularWeight		46.069	units: kg/kmol			
+NormalBoilingPoint	351.56	units: K				
+FreezingPoint 		161.16	units: K				
+CriticalTemperature	513.92	units: K				
+CriticalPressure	6.12E+06	units:Pa				
+CriticalVolume 		0.168	units:m3/kmol				
+AcentricFactor 		0.643	units: (-)				
+VL			0.05839		units:m3/kmol				
+EnthalpyFormation	-2.3495E+08	units:J/kmol				
+EntropyReference	2.8064E+05	units:J/kmol/K				
+GibbsEnergyFormation	-1.6785E+08	units:J/kmol				
+ReferenceTemperature	298.16	units:K				
+VapourPressure	5	units:Pa				
+74.475	-7164.3	-7.327	3.1340E-06	2		units:Parameters for vp: exp[c1+c2/T+c3*ln(T)+c4*T^c5]
+159.05	4.84589E-04					units: "Tmin, vp at Tmin"
+513.92	6.11715E+06					units: "Tmax, vp at Tmax"
+EnthalpyVapourization	4	units:J/kmol				
+5.690E+07	0.3359	0.0	0.0			units:Parameters for Hvap:hv=h1*(1-T)**(h2+h3*T+h4*T**2)
+159.05	5.02447E+07					units: "Tmin, Hvap at Tmin"
+513.92	0.00000E+0					units: "Tmax, Hvap at Tmax"
+SpecificHeatCapacity	5	units:	J/kmolK			
+4.920E+04	1.4577E+05	1.6628E+03	9.39E+04	7.4470E+02	units:Parameters for Cpig: cp = cp1 + cp2*((cp3/T)/scipy.sinh(cp3/T))**2 + cp4*((cp5/T)/scipy.cosh(cp5/T))**2
+200.0	5.2235E+04					units: "Tmin, Cp at Tmin"
+1500.0	1.6576E+05					units: "Tmax, Cp at Tmax"
+LiquidDensity	4	units:kmol/m3				
+1.648	2.7627E-01	513.92	0.2331			units:Parameters for liquiddensity: ld=l1/l2**(1 + (1-T/l3)**l4)
+159.05	1.94127E+01					units: "Tmin, ld at Tmin"
+513.92	5.96519E+00					units: "Tmax, ld at Tmax"

@@ -1,0 +1,30 @@
+n-hexane								
+MolecularWeight	86.177					units:kg/kmol		
+NormalBoilingPoint	341.9			units: K				
+FreezingPoint	177.8					units: K		
+CriticalTemperature	507.6					units: K		
+CriticalPressure	3.0400E+06					units: Pa		
+CriticalVolume	3.730E-01					units: m3/kmol		
+AcentricFactor	3.040E-01							
+LiquidVolume	1.3100E-01					units: m3/kmol		
+ReferenceTemperature	2.9815E+02				units:K			
+ReferencePressure	1.0133E+05				units:Pa			
+EnthalpyFormation    	-1.6694E+08				units: J/kmol			
+EntropyReference 	3.8874E+05				units:J/kmol-K			
+GibbsEnergyFormation	-6.60E+04				units: J/kmol			
+VapourPressure	5					units: Pa  Temperature in K.  There are 5 parameters		
+104.65000	-6995.50000	-12.70200	1.2381E-05	2.00000		units: Parameters for vp:  exp[c1 + c2/T +c3*ln(T) + c4*T^c5]		
+177.83000	0.90169					"units: ""Tmin, VP at Tmin"""		
+507.60000	3044900.00000					units:	"Tmax, VP at Tmax"	
+SpecificHeatCapacity	5					units: Pa  Temperature in K.  There are 5 parameters		
+104400.00000	352300.00000	1694.90000	236900.00000	761.60000		units: Parameters for Cp:  given formula
+200.00000		111170.00000					"units: ""Tmin, Cp at Tmin"""	
+1500.00000		386200.00000					units:	"Tmax, Cp at Tmax"
+EnthalpyVapourization		4					units: Pa  Temperature in K.  There are 4 parameters	
+4.45440E+07	3.90020E-01	0.00000E+00	0.00000E+00			units: Parameters for Hvp:  given formula		
+1.77830E+02	3.76470E+07					"units: ""Tmin, Hvp at Tmin"""		
+5.07600E+02	0.00000E+00					units:	"Tmax, Hvp at Tmax"	
+LiquidDensity	4					units: Pa  Temperature in K.  There are 4 parameters		
+7.08240E-01	2.64110E-01	5.07600E+02	2.75370E-01			units:  Parameters for liquiddensity:  given formula		
+1.77830E+02	8.74700E+00					"units:  """"Tmin, rho at Tmin"""""""		
+5.07600E+02	2.68200E+00					units:	"Tmax, rho at Tmax"

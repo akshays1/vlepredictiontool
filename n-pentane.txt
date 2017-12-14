@@ -1,0 +1,30 @@
+n-pentane	
+MolecularWeight 72.150	units:kg/kmol				
+NormalBoilingPoint  309.21	units: K				
+FreezingPoint	143.5	units: K				
+CriticalTemperature	469.7	units: K				
+CriticalPressure	3.36E+06	units: Pa				
+CriticalVolume	0.315	units: m3/kmol				
+AcentricFactor	0.251
+ReferenceTemperature 298.15 units: K
+ReferencePressure  101325  units:pa					
+VL	1.153E-01	units: m3/kmol	
+EnthalpyFormation   -17.35E+07   units:J/kmol
+EntropyReference    2.6347E+05     units:J/kmol/K
+GibbsEnergyFormation	-9.2E+06	units:J/kmol	
+EnthalpyVapourization     4       units:temperature in K . there are 4 parameters
+3.9109E+07  0.38681  0.0  0.0  units:parameters for hvap:c1*(1-Tr)^(c2+c3*Tr+c4*Tr*Tr)
+143.42  3.3968E+07  units:Tmin,hvap at Tmin
+469.7  0.0     units:Tmax,hvap at Tmax
+LiquidDensity       4          units:kmol/m3 temperature in K . there are 4 parameters
+0.84947 0.26726 469.7 0.27789  units: parameters for rho: c1/c2**(1+(1-T/c3)**c4)
+143.42   10.474     units: "Tmin, rho at Tmin"
+469.7    3.178       units:"Tmax, rho at Tmax"
+SpecificHeatCapacity     5      units:J/kmol/K  temperature in K . there are 5 parameters
+0.8805E+05  3.011E+05  1.6502E+03  1.8920E+05  747.6  units:parameters for cpig = c1+c2*(c3/T/sinh(c3/T))^2 + c4*(c5/T/cosh(c5/T))^2			
+200  0.9404E+05     units:"tmin , cpig at tmin"
+1500  3.2927E+05    units:"tmax , cpig at Tmax"
+VapourPressure      5		units: Pa  Temperature in K.  There are 5 parameters				
+78.741	-5420.3	-8.8253	9.6171E-06	2		units: Parameters for vp:  exp[c1 + c2/T +c3*ln(T) + c4*T^c5]
+143.42	6.8642E-02		units: "Tmin, VP at Tmin"			
+469.7	3.3642E+06	units:	"Tmax, VP at Tmax"

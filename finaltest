@@ -1,0 +1,7 @@
+import Utilities
+import mastersource
+equation=mastersource.Molecule_CubicEquationOfState('m-xylene','PR')
+equation.PHisotherms([550])
+equation.PVisotherms([600])
+print equation.CriticalTemperature
+equation.TSisobars([100000])

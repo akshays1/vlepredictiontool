@@ -1,0 +1,30 @@
+1-heptanol						
+MolecularWeight	116.203					
+NormalBoilingPoint	448.16	units: K				
+FreezingPoint	307.76	units: K				
+CriticalTemperature	631.9	units: K				
+CriticalPressure	3.18E+06	units: Pa				
+CriticalVolume	0.435	units: m3/kmol				
+AcentricFactor	0.592					
+VL	0.14193	units: m3/kmol
+ReferenceTemperature   298.16   units:  K
+EnthalpyFormation	-33.64E+07
+GibbsEnergyFormation	-12.53E+07
+EntropyofFormation      4.7919E+05
+EntropyReference    0  units:J/K/mol				
+VapourPressure	5		units: Pa  Temperature in K.  There are 5 parameters				
+160.08 -14095 -19.211 1.7043E-17 6		        units: Parameters for vp:  exp[c1 + c2/T +c3*ln(T) + c4*T^c5]
+239.15	1.699E-02	units: "Tmin, VP at Tmin"			
+631.9	3.181E+06       units:	"Tmax, VP at Tmax"
+LiquidDensity	4                   units: density in kmol/m3. There are 4 parameters
+0.60481 0.2632 631.9 0.273                              units: liquid density: C1/C2^[1 + (1 - T/C3)^C4]
+239.15 7.421             units: "Tmin, Dmin"
+631.9 2.298              units: "Tmax, Dmax"   
+EnthalpyVapourization	4	units:	"T in K, Hvap in J/kmol"
+96900000	0.57	0	0          units: heat of vaporization: C1 x (1 - Tr)^(C2 + C3 x Tr + C4 x Tr x  Tr)
+239.15	74000000        	units: "Tmin, HVmin"
+631.9	0                  	units: "Tmax, HVmax"
+SpecificHeatCapacity	5
+122150	3.99E+05	1580	283500	717.7         units: heat capacity : C1 + C2*((C3/T)/sinh(C3/T))^2+C4*((C5/T)/cosh(C5/T))^2
+200 1.3330E+05           units: "Tmin, cpmin"   
+1500 4.5346E+05          units: "Tmax, cpmax"

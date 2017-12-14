@@ -1,0 +1,29 @@
+p-xylene										
+MolecularWeight	106.167									
+CriticalTemperature	616.23	units: 	K							
+CriticalPressure	3500000	units:	Pa							
+CriticalVolume	0.381	units: 	m3/kmol							
+AcentricFactor	0.32									
+EnthalpyFormation	18030000	units: 	J/kmol							
+EntropyReference	352230	units:	J/kmolK							
+GibbsEnergyFormation	121400000	units: 	J/kmol							
+FreezingPoint	225.76	units:	J/kmol							
+NormalBoilingPoint	411.66	units:	J/kmol							
+VL	0.12415	units: 	m3/kmol	
+ReferenceTemperature  298.16  units: K						
+VapourPressure		5	units:	vp in Pa.  T in K.  There are 5 parameters						
+85.475	-7595.8	-9.378	5.6875E-06	2	units:	vp parameters:		exp(c1+c2/T+c3*ln(T)+c4*T^c5)		
+286.41	581.44	units: 	Tmin and vp at Tmin respectively							
+616.23	3498400	units:	Tmax and vp at Tmax respectively							
+LiquidDensity		4	units:	density in kmol/m3. T in K. There are 4 parameters						
+0.6816	0.25963	616.23	0.2768	units:	density parameters			c1/c2^(1+(1-T/c3)^c4)		
+286.41	8.1616	units:	Tmin and d at Tmin							
+616.23	2.625	units:	Tmax and d at Tmax							
+EnthalpyVapourization 	4	units:	"T in K, Hvap in J/kmol"							
+53740000	0.3656	0	0	units: 	Hvap parameters 		c1*(1-Tr)^(c2+c3*Tr+c4*Tr*Tr)			Tr=T/Tc
+286.41	42761000	units:	Tmin and Hvap at Tmin							
+616.23	0	units:	Tmax and Hvap at Tmax							
+SpecificHeatCapacity	5	units:	Cp in J/molK. T in K. There are 5 parameters 							
+75120	339700	1492.8	224700	-675.1	units: 	 Cp parameters		c1+c2*((c3/T)/sinh(c3/T))^2+c4*((c5/T)/cosh(c5/T))^2		
+200	87100	units:	Tmin and Cp at Tmin							
+1500	359230	units:	Tmax and Cp at Tmax							

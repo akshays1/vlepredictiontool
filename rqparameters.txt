@@ -1,0 +1,54 @@
+rqParameters								
+m-xylene								
+r		3.3252						
+q		3.6264						
+p-xylene								
+r		3.3252						
+q		3.6264						
+ethylbenzene								
+r		3.424						
+q		4.0175						
+1-nonene								
+r		5.7107						
+q		6.95628						
+n-hexane								
+r		3.795						
+q		4.954						
+benzene								
+r		3.19						
+q		2.4						
+ethanol								
+r		2.11						
+q		1.75						
+q-		0.95						
+aceticacid								
+r		1.9						
+q		1.8						
+formicacid								
+r		1.54						
+q		1.48						
+n-octane								
+r		5.85						
+q		4.94						
+n-heptane								
+r		4.4275						
+q		5.6621						
+water								
+r		0.92						
+q		1.4						
+q-		1						
+2-propanol								
+r		2.9605						
+q		3.3433						
+q-		0.89						
+methanol								
+r		1.43						
+q		1.43						
+q-		0.96						
+n-pentane								
+r		3.1625						\
+q		4.2459						
+2-methyl-2-butanol								
+r		3.852						
+q		4.725						
+q-		1.15						
