@@ -1,0 +1,1039 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>mastersource.Molecule_UNIQUAC</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="mastersource-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="mastersource-module.html">Module&nbsp;mastersource</a> ::
+        Class&nbsp;Molecule_UNIQUAC
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="mastersource.Molecule_UNIQUAC-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Molecule_UNIQUAC</h1><p class="nomargin-top"><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC">source&nbsp;code</a></span></p>
+<dl><dt>Known Subclasses:</dt>
+<dd>
+      <ul class="subclass-list">
+<li><a href="mastersource.WongSandlerVLE-class.html">WongSandlerVLE</a></li>  </ul>
+</dd></dl>
+
+<hr />
+<pre class="literalblock">
+
+  
+  Contains all the methods required to calculate liquid phase activity co-efficients for a mixture of non-electrolytic, non - aggregating molecules using the UNIQUAC activity co-efficient model
+  
+  The class requires the names of the components forming the Liquid mixture.
+
+  This model is based on statistical mechanical theory, allows local compositions to result from both the size
+  and energy differencesbetween the molecules in the mixture. The result is the expression for EXCESS GIBBS ENERGY OF MIXING:
+
+      Gexcess/RT = Gexcess(combinatorial)/RT + Gexcess(residual)/RT
+
+  where the first term accounts for molecular size and shape differences, and the second term accounts largely for energy differences.
+
+      Gexcess(combinatorial)/RT = sum-over-i{ x[i] ln(phi[i]/theta[i] + .5 * z sum-over-j{x[i] * q[i] * ln (theta[i]/phi[i])}}
+
+      Gexcess(residual)/RT = - sum-over-i { q'[i]*x[i]*ln(sum-over-j {theta[j] * tou[j][i]}
+
+      where
+                  r[i] = VOLUME PARAMETERS for species i
+                  q[i] = SURFACE AREA PARAMETERS for species i
+                  q'[i] = SURFACE AREA PARAMETER SUBSTITUTE for molecules forming intermolecular-hydrogen-bonds. for non-hydrogen-bonding molecules, q'[i] = q[i]
+                  theta[i] = AREA FRACTION of species i =x[i]*q'[i]/sum-over-j{x[j] * q[j]}
+                  phi[i] = VOLUME FRACTION of species i = x[i] * r[i] /sum-over-j{x[j] * r[j]}
+                  ln tou[i][j] = -a[i][j]/T
+                  where a[i][j] is the BINARY INTERACTION PARAMETER between i th and j th species
+                  z = co-ordination number = 10
+      Formulae for calculation of the ACTIVITY COEFFICIENT gamma[i]:
+          ln(gamma[i]) = ln(gamma(combinatorial)[i])+ln(gamma(residual)[i])
+      where,
+          ln(gamma(combinatorial)[i]) = ln( phi[i]/x[i]) - z*0.5 *q[i]*ln(phi[i]/theta[i]) + l[i] - phi[i]*sum-over-j{x[j]*l[j]}/x[i]
+          where,
+              l[i] = (r[i]-q[i])*.5*z - r[i] +1
+          ln(gamma(residual)[i]) = q'[i] (1 - ln(sum-over-j{theta[j]*tou[j][i]} - sum-over-j{ theta[j]*tou[i][j]/sum-over-k{ theta[k] * tou[k][j]}}
+******************************************************************************
+The following are attributes of Molecule_UNIQUAC
+
+******************************************************************************
+listr : It is a dictionary containing the volume parameters of each species 
+        in the mixture
+listq : It is a dictionary that contains the surface area parameters of the 
+        mixture components
+listqd: Is also a dictionary containing the adjusted surface area parameter values
+
+listas: Is a dictionary containing the interaction parameters for each binary pair
+        in the mixture.
+
+***************************************************************************
+  The following private utility methods are available
+  ***************************************************************************
+  __init__                    : Defines the attributes reuired for the UNIQUAC method and assigns values to them by calling __readparameterfile() and __readrand()
+  __readparameterfile         : Uses the 'interactionparameters.txt' text file as an input to obtain the BINARY INTERACTION PARAMETERS for all the components comprising the vapour-liquid system
+  __readrandq                 : Uses the 'rqparameters.txt' text file as an input to obtain the volume (r) and surface area (q) parameters for each molecular
+                                species for use in the UNIQUAC model
+  ***************************************************************************
+  The following public methods are available
+  ***************************************************************************
+  createlists     : INPUT = Liquid phase composition of the mixture as a list ; RETURNS it as a dictionary after checking whether the sum is one and that all the molefractions are positive  
+  getTau          : INPUT = Temperature ; RETURNS a dictionary of tou[i][j], the binary parameters calculated using self.listas of binary interaction parameters or the interaction parameters' list
+  getPhi          : INPUT = Compostion of the liquid mixture as a list; CALLS createlists to convert it into a dictionary; CALCULATES phi values for all components and stores them in class attribute self.listphi as a dictionary and RETURNS its copy aaa 
+  getTheta        : INPUT = Compostion of the liquid mixture as a list; CALLS createlists to convert it into a dictionary; CALCULATES theta values for all components and stores them in class attribute self.listtheta as a dictionary and RETURNS its copy aaa 
+  getGexComb      : INPUT = Temperature, composition; Calls gettheta, gettau @ Temperature and getphi to obtain values of theta,tau and phi, CALLS createlists to get a dictionary of compostions which is used along with the attributes of Molecule_UNIQUAC like r,q to calculate the GexcessCombinatorial which is then RETURNED
+  getGexRes       : INPUT = Temperature, composition; Calls gettheta, gettau @ Temperature and getphi to obtain values of theta,tau and phi, CALLS createlists to get a dictionary of compostions which is used along with the attributes of Molecule_UNIQUAC like r,q to calculate the GexcessResidual which is then RETURNED
+  getGex          : INPUT = Temperature and compostion; CALLS getgexcomb and getgexres by passing Temperature and Composition as the attributes and RETURNS Total GIBBSexcess for the multicomponent system
+  getGammaComb    : INPUT = Temperature and composition; CALLS gettau @ Temperature,getphi and getheta and uses the formulae given above to obtain and RETURNS values of GammaCombinatorial as a Dictionary
+  getGammaRes     : INPUT = Temperature and composition; CALLS gettau @ Temperature,getphi and getheta and uses the formulae given above to obtain and RETURNS values of GammaResidual as a Dictionary
+  getGamma        : INPUT = Temperature, composition; CALLS getgammacomb and getgammares to obtain their respective values and multiplies them to obtain and return overall gamma for each of the components as a dictonary
+  getGammaInfDil  : This function is not needed as far as the UNIQUAC model is concerned but however, for doing the VLE calculations using Wong-Sandler method, the value of gamma@infinite dilution for all the components forming the mixture.
+                    This function assigns a molefraction of 1e-10 to  the component whose gamma@infi dilution is to be obtained and distributes the remaining fraction (1 - 1e-01) amongst other components. Then it creates a new molefraction list which is passed to the method getgamma to obtain Activity Coefficient at infintite dilution for a given species.
+      
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">componentlist</span>)</span><br />
+      The class intanciation:: obj = Molecule_UNIQUAC(name) ::requires the list of names of  components of the mixture to be specified.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#checklist" class="summary-sig-name">checklist</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">complist</span>)</span><br />
+      INPUTS</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.checklist">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#createlists" class="summary-sig-name">createlists</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">compositionlist</span>,
+        <span class="summary-sig-arg">mode</span>)</span><br />
+      INPUTS compositionlist : that is a list of the liquid phase 
+      composition (molefraction or x) of the mixture</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.createlists">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#__readparameterfile" class="summary-sig-name" onclick="show_private();">__readparameterfile</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      OPEN = interactionparameters.txt</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.__readparameterfile">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#__readrandq" class="summary-sig-name" onclick="show_private();">__readrandq</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      OPEN : rqparameters.txt which supplies the values of volume and area 
+      interaction parameters for various compounds</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.__readrandq">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getTau" class="summary-sig-name">getTau</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>)</span><br />
+      INPUT : T ; Temperature in Kelvin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getTau">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getThetad" class="summary-sig-name">getThetad</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">comp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : list comp ; composition in mole fraction
+        ll(mode): Either '0' or '1'</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getThetad">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getPhi" class="summary-sig-name">getPhi</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">comp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : list comp ; composition in mole fraction
+        ll (mode) : Either '0' or '1'</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getPhi">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getTheta" class="summary-sig-name">getTheta</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">comp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : list comp ; composition in mole fraction
+        ll(mode): Either '0' or '1'</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getTheta">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getGexComb" class="summary-sig-name">getGexComb</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : list compp : composition in mole fraction</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGexComb">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getGexRes" class="summary-sig-name">getGexRes</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : list compp ; composition in mole fraction</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGexRes">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getGex" class="summary-sig-name">getGex</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : float T ; Temperature in Kelvin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGex">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getGammaComb" class="summary-sig-name">getGammaComb</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : float T ; Temperature in Kelvin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGammaComb">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getGammaRes" class="summary-sig-name">getGammaRes</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : float T ; Temperature in Kelvin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGammaRes">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getGamma" class="summary-sig-name">getGamma</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : float T ; Temperature in Kelvin
+        list compp ; liquid phase composition in molefraction</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGamma">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getGammaInfDil" class="summary-sig-name">getGammaInfDil</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">name</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : float T ; Temperature in Kelvin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGammaInfDil">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">componentlist</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+        The class intanciation:: obj = Molecule_UNIQUAC(name) ::requires the list of names of  components of the mixture to be specified.
+        
+        This will direct the code to read the datafiles called interactionparameters.txt and rqparameters.txt and use the data to ready the object for use.
+
+INPUT : list of components
+
+CALLS : __readparameterfile()
+        __readrandq()                
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="checklist"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">checklist</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">complist</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.checklist">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>INPUTS</p>
+  <p>complist: A dictionary containing the composition of the mixture in 
+  mole fraction form.</p>
+  <p>OUTPUT:</p>
+  <p>The checklist method is used to check if the values of mole fraction 
+  associated with the given species in mixture are physically meaningful. 
+  This method checks the input mole fractions complist for the 
+  following:</p>
+  <p>1) No element must be zero or negative</p>
+  <p>2) The sum of the elements must be equal to 1</p>
+  <p>The method is designed to crash the entire program if either of the 
+  above requirements is not met.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="createlists"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">createlists</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">compositionlist</span>,
+        <span class="sig-arg">mode</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.createlists">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>INPUTS compositionlist : that is a list of the liquid phase 
+  composition (molefraction or x) of the mixture</p>
+  <p>mode: Can take either '0' or '1'. If mode==0, the checklist() method 
+  is executed on the dictionary. If mode==1, no check is</p>
+  <p>performed. If mode takes any other value, a ValueError is raised.</p>
+  <p>RETURN = dictcomps : dictionary of x after checking whether summation 
+  of all x =1 and all x are positive depending upon the value of mode</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="__readparameterfile"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__readparameterfile</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.__readparameterfile">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>OPEN = interactionparameters.txt</p>
+  <p>OBTAIN = binary interaction parameters (listas) as a dictionary for 
+  all the pairs possible from the given liquid mixture</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="__readrandq"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__readrandq</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.__readrandq">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>OPEN : rqparameters.txt which supplies the values of volume and area 
+  interaction parameters for various compounds</p>
+  <p>OBTAIN : Store the values of Volume and Surface Area Parameters in 3 
+  different dictionaries which</p>
+  <p>are also attributes of the class ( listr for r, listq for q, listqd 
+  for q')</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getTau"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getTau</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getTau">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>INPUT : T ; Temperature in Kelvin</p>
+  <p>RETURN : taus ; Dictionary consisting of tou values for various pairs 
+  of components in the mixture by using their listas i.e. interaction 
+  parameter values</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getThetad"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getThetad</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">comp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getThetad">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT : list comp ; composition in mole fraction
+        ll(mode): Either '0' or '1'
+
+CALL : creatlists(comp,ll) to convert list composition to dictionary composition
+
+ASSIGN : theta(area fraction) values to class attribute listtheta dictionary
+
+RETURN : listqd (adjusted area fraction) dictionary 
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getPhi"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getPhi</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">comp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getPhi">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT : list comp ; composition in mole fraction
+        ll (mode) : Either '0' or '1' 
+
+CALL : creatlists(comp,ll) to convert list composition to dictionary composition
+
+ASSIGN : phi(volume fraction) values to class attribute listphi dictionary
+
+RETURN : listphi (volume fraction) dictionary
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getTheta"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getTheta</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">comp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getTheta">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT : list comp ; composition in mole fraction
+        ll(mode): Either '0' or '1'
+
+CALL : creatlists(comp,ll) to convert list composition to dictionary composition
+
+ASSIGN : theta(area fraction) values to class attribute listtheta dictionary
+
+RETURN : thet (area fraction) dictionary 
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getGexComb"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getGexComb</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">compp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGexComb">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT : list compp : composition in mole fraction
+        
+        float T : Temperature in K
+        
+        ll(mode): Either '0' or '1'
+
+CALL : gettheta(compp) to obtain theta
+       
+       getphi(compp) to obtain phi
+       
+       createlists to convert list(comp) composition to dictionary composition
+       
+       gettau(T) to obtain tou for all binary-pairs in the system
+
+RETURN : float gc, Gibbs Excess Combinatorial in (J/kmol)
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getGexRes"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getGexRes</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">compp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGexRes">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT : list compp ; composition in mole fraction
+        
+        float T ; Temperature in K
+        
+        ll(mode): Either '0' or '1'
+        
+CALL : gettheta(compp) to obtain theta
+       
+       getphi(compp) to obtain phi
+       
+       gettau(T) to obtain tou for all binary-pairs in the system
+       
+       createlists to convert list(comp) composition to dictionary composition
+
+RETURN : float gr ; Gibbs Excess Residual in (J/kmol)
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getGex"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getGex</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">compp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGex">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT : float T ; Temperature in Kelvin
+        
+        list compp ; liquid phase composition in molefraction
+        
+        ll(mode): Either '0' or '1'
+CALL : getexcomb(T,compp) and getexres(T,compp) to get the values of Gibbs Excess Combinatorial and Gibbs Excess Residual respectively at T and compp
+
+RETURN : float ge ; Gibbs Excess at T and compp in J/kmol
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getGammaComb"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getGammaComb</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">compp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGammaComb">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+ INPUT : float T ; Temperature in Kelvin
+         
+         list compp ; liquid phase composition in molefraction
+         
+         ll(Mode) : Either '0' or '1'
+ 
+ CALL : gettheta(compp) to obtain theta
+        
+        getphi(compp) to obtain phi
+        
+        gettau(T) to obtain tou for all binary-pairs in the system
+        
+        createlists to convert list(comp) composition to dictionary composition
+
+RETURN : dictionary gammac ; Combinatorial Gamma
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getGammaRes"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getGammaRes</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">compp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGammaRes">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT : float T ; Temperature in Kelvin
+        
+        list compp ; liquid phase composition in molefraction
+        
+        ll(mode) : Either '0' or '1'
+
+CALL : gettheta(compp) to obtain theta
+       getphi(compp) to obtain phi
+       gettau(T) to obtain tou for all binary-pairs in the system at T
+       createlists to convert list(comp) composition to dictionary composition
+RETURN : dictionary gammar ; Residual Gamma
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getGamma"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getGamma</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">compp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGamma">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT : float T ; Temperature in Kelvin
+        list compp ; liquid phase composition in molefraction
+
+CALL : getgammacomb(T,compp) and getgammares(T,compp) to get the values of COMBINATORIAL GAMMA AND RESIDUAL GAMMA 
+
+RETURN : dictionary gama ; Gamma
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getGammaInfDil"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getGammaInfDil</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">name</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGammaInfDil">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT : float T ; Temperature in Kelvin
+        
+        string name ; name of the component whose gamma@infinite dilution is to be found
+
+        ll(mode): Either '0' or '1'
+
+CALL : getgamma(T, artificial-molefraction) to get gamma@infinite dilution
+
+RETURN : float ginfd ; Gamma@infinite Dilution
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="mastersource-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Apr 06 17:11:42 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

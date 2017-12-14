@@ -1,0 +1,751 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>mastersource.Molecule</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="mastersource-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="mastersource-module.html">Module&nbsp;mastersource</a> ::
+        Class&nbsp;Molecule
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="mastersource.Molecule-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Molecule</h1><p class="nomargin-top"><span class="codelink"><a href="mastersource-pysrc.html#Molecule">source&nbsp;code</a></span></p>
+<dl><dt>Known Subclasses:</dt>
+<dd>
+      <ul class="subclass-list">
+<li><a href="mastersource.Molecule_CubicEquationOfState-class.html">Molecule_CubicEquationOfState</a></li>  </ul>
+</dd></dl>
+
+<hr />
+<pre class="literalblock">
+
+ The Molecule class of objects represent pure component IDEAL GAS properties of molecules.
+ 
+ ***************************************************************************
+
+The following are the SCALAR attributes of this class:
+
+***************************************************************************
+ Name                            : The name of the molecule.  The data for the molecule is stored in a text file [Name].txt
+ MolecularWeight                 : Is the molecular weight in kg/kmol
+ NormalBoilingPoint              : The molecule's normal boiling point in K
+ FreezingPoint                   : The molecule's normal freezing point in K
+ CriticalTemperature             : The molecule's critical temperature in K
+ CriticalPressure                : The molecule's critical pressure in Pa
+ CriticalVolume                  : The molecule's critical molar volume in m3/kmol
+ AcentricFactor                  : The molecule's acentric factor
+ ReferenceTemperature            : The reference temperature at which enthalpy of formation is calculated (298.15 K)
+ ReferencePressure               : The reference pressure at which entropy is calculated (101,325 Pa)
+ EnthalpyFormation               : The enthalpy of formation of the molecule from its constitutent elements in the ideal gas state at 298.15K.  (J/kmol)
+ GibbsEnergyFormation            : The Gibbs free energy of formation of the molecule in the ideal gas state at 298.15 K. (J/kmol)
+ EntropyReference                : The entropy of the molecule as an ideal gas at 298.15K and 101,325 Pa pressure. (J/kmol-K)
+ ************************************************************************************************************************
+ The following private attributes are lists of parameters used in correlating temperature dependent pure component properties.
+ ************************************************************************************************************************
+ __listVapourPressureParameters          : List of parameters [c1, c2, c3, c4, c5, Tmin, Tmax] used in vapour pressure correlation       
+                                         :: vp (Pa)          = exp(c1 + c2/T + c3*log(T) + c4*T**c5).  
+                                         The correlation is valid between Tmin and Tmax. T in K
+ __listLiquidDensityParameters           : List of parameters [c1, c2, c3, c4, Tmin, Tmax] used in liquid density correlation            
+                                         :: dens (kmol/m3)   = c1/c2**(1+(1-T/c3)**c4). 
+                                         The correlation is valid between Tmin and Tmax. T in K
+ __listEnthalpyVapourizationParameters   : List of parameters [c1, c2, c3, c4, Tmin, Tmax] used in enthalpy of vapourization correlation 
+                                         :: hvap (J/kmol)    = c1*(1-Tr)**(c2+c3*Tr+c4*Tr*Tr). 
+                                         Where Tr = T/Tc. Tc = Critical Temperature in K, T in K.  
+                                         Tmin and Tmax are the boundaries of the valid region for this correlation.
+ __listSpecificHeatCapacityParameters    : List of parameters [c1, c2, c3, c4, c5, Tmin, Tmax] used in IDEAL GAS specific heat capacity  
+                                         :: cp (J/kmol-K)    = c1 + c2*(csin/scipy.sinh(csin))**2+c4*(ccos/scipy.cosh(ccos))**2. 
+                                         Here, csin = c3/T and ccos = c4/T and T is in K.  
+                                         Tmin and Tmax are the boundaries of the valid region for the correlation.
+ **************************************************************************************************************************
+ The object contains the following private utility functions
+ **************************************************************************************************************************
+ __CorrelationBank                         : Calculates the given property at the given temperature using correlations.
+ __readCorrelation                         : A method to read parameters for and verify given correlations against endpoint values
+ __readScalar                              : A method to read and verify scalar properties
+ __readDataFile                            : A method to read the data file [name].txt
+ **************************************************************************************************************************
+ The following pure temperature property methods are available.
+ EXAMPLE:  Take the method VapourPressure,
+             VapourPressure('bounds') returns a list [Tmin, Tmax] specifying the bounds of the temperature range where it is valid.
+             VapourPressure(T) returns a float which is the vapour pressure at temperature T (in K)
+ The methods use a UnivariateSpline object to interpolate properties are functions of temperature.
+ **************************************************************************************************************************
+ VapourPressure(T)                          : Vapour Pressure in Pa as a function of T.  
+                                             Interpolation from 1000 points between Tmin and Tmax. Cubic spline.
+ LiquidDensity(T)                           : Liquid Density in kmol/m3 as a function of T.
+                                             Interpolation from 1000 points between Tmin and Tmax. Cubic spline.
+ EnthalpyVapourization(T)                   : Enthalpy of Vapourization in J/kmol as a function of T.
+                                             Interpolation from 1000 points between Tmin and Tmax. Cubic spline.
+ SpecificHeatCapacity(T)                    : Specific Heat Capacity of Ideal Gas J/kmol-K as a function of T.
+                                             Interpolation from 1000 points between Tmin and Tmax. Cubic spline.
+ EnthalpyIdealGas(T)                        : Enthalpy of Ideal Gas J/kmol as a function of T.
+                                             Interpolation from 1000 points between Tmin and Tmax. Cubic spline.
+                                             H = Hfig + [Integral SpecificHeatCapacity from Tref to T]
+ EntropyIdealGasReference(T)                : Entropy of Ideal Gas J/kmol-K as a function of T at reference pressure 101,325 Pa.
+                                             Interpolation from 1000 points between Tmin and Tmax. Cubic spline.
+                                             Sig_ref = Sreference + [Integral SpecificHeatCapacity/T from Tref to T]
+                                             Note:  The reference conditions for entropy are Treference = 298.15K and Preference = 101,325 Pa
+ GibbsEnergyIdealGasReference(T)            : Gibbs Energy of Ideal Gas J/kmol as a function of T at pressure of 101,325 Pa.
+                                             Interpolation from 1000 points between Tmin and Tmax. Cubic spline.
+                                             Note: Gfig != Hfig - Tref*Sreference,
+                                                 Hence: Gig_ref = Gfig + (H - Hfig) - T*(S - Sreference) 
+ 
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      The class intanciation.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#VapourPressure" class="summary-sig-name">VapourPressure</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">der</span>)</span><br />
+      If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.VapourPressure">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#LiquidDensity" class="summary-sig-name">LiquidDensity</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">der</span>)</span><br />
+      LiquidDensity(T):
+     If T == 'bounds', then returns a list [Tmin, Tmax] which are the bounds of the correlation
+     If T is a float, 
+         then if der = 0:
+             returns liquid density (kmol/m3) at the value of T in K
+         if der = 1:
+             returns first derivative of liquid density wrt.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.LiquidDensity">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#EnthalpyVapourization" class="summary-sig-name">EnthalpyVapourization</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">der</span>)</span><br />
+      If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.EnthalpyVapourization">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#SpecificHeatCapacity" class="summary-sig-name">SpecificHeatCapacity</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">der</span>)</span><br />
+      If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.SpecificHeatCapacity">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#EnthalpyIdealGas" class="summary-sig-name">EnthalpyIdealGas</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">der</span>)</span><br />
+      If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.EnthalpyIdealGas">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#EntropyIdealGasReference" class="summary-sig-name">EntropyIdealGasReference</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">der</span>)</span><br />
+      If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.EntropyIdealGasReference">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#GibbsEnergyIdealGasReference" class="summary-sig-name">GibbsEnergyIdealGasReference</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">der</span>)</span><br />
+      If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.GibbsEnergyIdealGasReference">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#__CorrelationBank" class="summary-sig-name" onclick="show_private();">__CorrelationBank</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">property</span>,
+        <span class="summary-sig-arg">T</span>)</span><br />
+      Evaluates the required correlation at the temperature T (in K).</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.__CorrelationBank">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__readCorrelation"></a><span class="summary-sig-name">__readCorrelation</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">idata</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.__readCorrelation">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__readScalar"></a><span class="summary-sig-name">__readScalar</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">info</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.__readScalar">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__readDataFile"></a><span class="summary-sig-name">__readDataFile</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Directs the code to read the datafile called [name].txt and set the 
+      various attributes of the object.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.__readDataFile">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>The class intanciation.</p>
+  <p>obj = Molecule(name) requires the name of the molecule to be 
+  specified.</p>
+  <p>This will direct the code to read the datafile called [name].txt and 
+  use to data to ready the object for use.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="VapourPressure"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">VapourPressure</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">der</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule.VapourPressure">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+
+
+
+If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.
+If T is a float,
+    if der = 0
+        then returns vapour pressure in Pa.
+    elif der = 1
+        then returns first derivative of vapour pressure wrt T (Pa/K)
+    elif der = 2
+        then returns second derivative of vapour pressure wrt T (Pa/K)
+    else returns valueerror    
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="LiquidDensity"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">LiquidDensity</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">der</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule.LiquidDensity">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+
+LiquidDensity(T):
+     If T == 'bounds', then returns a list [Tmin, Tmax] which are the bounds of the correlation
+     If T is a float, 
+         then if der = 0:
+             returns liquid density (kmol/m3) at the value of T in K
+         if der = 1:
+             returns first derivative of liquid density wrt. T
+         if der = 2:
+             returns the second derivative
+         else:
+             raises ValueError
+ 
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="EnthalpyVapourization"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">EnthalpyVapourization</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">der</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule.EnthalpyVapourization">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+
+
+If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.
+If T is a float, 
+    then if der = 0:
+        returns enthalpy of vapourization in J/kmol
+    else if der = 1:
+        returns the first derivative of Hvap wrt T
+    else if der = 2:
+        returns the second derivative
+    else raised ValueError
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="SpecificHeatCapacity"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">SpecificHeatCapacity</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">der</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule.SpecificHeatCapacity">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+
+If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.
+If T is a float, 
+    if der = 0:
+        then returns specific heat capacity in ideal gas state in J/kmol-K
+    if der = 1:
+        returns the first derivative
+    if der = 2:
+        returns the second derivative
+    else raises ValueError
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="EnthalpyIdealGas"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">EnthalpyIdealGas</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">der</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule.EnthalpyIdealGas">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+
+
+    If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.
+    If T is a float, 
+        if der = 0: then returns enthalpy change in ideal gas state from Tref to T in J/kmol
+        if der = 1: returns the first derivative wrt T
+        if der = 2: returns the second derivative
+        else raises ValueError
+EnthalpyIdealGas:: Hig(T) = integral(Cp, Tref, T)
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="EntropyIdealGasReference"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">EntropyIdealGasReference</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">der</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule.EntropyIdealGasReference">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+
+    If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.
+    If T is a float, 
+        if der = 0 then returns entropy change in ideal gas state from reference state 100KPa, 25 degree centigrade to
+        arbitrary T and and 100KPa
+        if der = 1 then returns first derivative wrt T
+        if der = 2 returns second derivative 
+        else raises ValueError
+EntropyIdealGasReference:: Sig(T) = integral(Cp/T, Tref, T)
+    Ideal gas entropy at any other pressure is EntropyIdealGasReference(T) - R*ln(P/Preference)               
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="GibbsEnergyIdealGasReference"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">GibbsEnergyIdealGasReference</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">der</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule.GibbsEnergyIdealGasReference">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+
+    If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.
+    If T is a float, 
+        if der == 0, then returns Gibbs Energy in ideal gas state at reference pressure Preference = 101,325 Pa in J/kmol
+        if der == 1, returns the first derivative
+        if der == 2, returns the second derivative
+        else raises ValueError               
+    Ideal gas Gibbs Energy at any other pressure is GibbsEnergyIdealGasReference(T) + R*T*ln(P/Preference)
+GibbsEnergyIdealGasReference:: Gig(T) = Gfig + Hig(T) - Hfig - T*(Sig(T) - Sreference)
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="__CorrelationBank"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__CorrelationBank</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">property</span>,
+        <span class="sig-arg">T</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule.__CorrelationBank">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Evaluates the required correlation at the temperature T (in K).
+The property to be calculated is passed through the string property.
+The property string could be:
+    'VapourPressure'
+    'LiquidDensity'
+    'EnthalpyVapourization'
+    'SpecificHeatCapacity'
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="mastersource-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Apr 06 17:11:42 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

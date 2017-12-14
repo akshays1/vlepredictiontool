@@ -1,0 +1,1488 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>mastersource.Molecule_CubicEquationOfState</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="mastersource-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="mastersource-module.html">Module&nbsp;mastersource</a> ::
+        Class&nbsp;Molecule_CubicEquationOfState
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="mastersource.Molecule_CubicEquationOfState-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Molecule_CubicEquationOfState</h1><p class="nomargin-top"><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+<a href="mastersource.Molecule-class.html">Molecule</a> --+
+           |
+          <strong class="uidshort">Molecule_CubicEquationOfState</strong>
+</pre>
+
+<hr />
+<pre class="literalblock">
+
+
+ The Molecule_CubicEquationOfState class of objects represent pure component  properties of molecules calculated using the specified cubic Equation Of State.
+
+The 'Molecule_CubicEquationOfState' class inherits from the 'Molecule' parent class.  
+The class requires the molecule name and the equation of state name: either 'SRK' for Soave-Redlich-Kwong or 'PR' for Peng-Robinson or 'Modified PR' for the Modified Peng - Robinson equation or 'PRSV1' for the Peng-Robinson-Stryek-Vera Equation 1 or 'PRSV2' for the Peng-Robinson-Stryek-Vera Equation 2.
+
+A cubic equation of state relates Pressure (P) to temperature (T) and molar volume (V)
+Its general form is:: P = RT/(V-b) - a(T)/[(V+epsilon*b)*(V+sigma*b)]
+                        a(T) = OmegaA*alpha(T)*R**2*Tc**2/Pc; where alpha(T) = [1 + (0.48000 + 1.57400*w - 0.17600*w**2)*(1-Tr**0.5)]**2 ... for SRK equation of state
+                                                                             = [1 + (0.37464 + 1.54226*w - 0.26992*w**2)*(1-Tr**0.5)]**2 ... for PR  equation of state
+                        b    = OmegaB*R*Tc/Pc
+                        w    = AcentricFactor
+                        Tc   = Critical Temperature
+                        Pc   = Critical Pressure
+                        Tr   = T/Tc = Reduced Temperature
+                        The following values for SRK and PR Equations of State are also used:
+                        PARAMETER           VALUE for SRK           VALUE for PR    VALUE for PRSV1  VALUE FOR PRSV2  VALUE FOR Modified PR
+                            epsilon             0                       -0.414214   -0.414214         -0.414214        -0.414214 
+                            sigma               1                        2.414214    2.414214          2.414214         2.414214
+                            OmegaA              0.42748                  0.457235    0.457235          0.457235         0.457235
+                            OmegaB              0.08664                  0.077796    0.077796          0.077796         0.077796
+                            c                   0.69315                  0.62323     0.62323           0.62323          0.62323
+The equation of state can also be cast in the form of a cubic equation in the compressibility Z = PV/RT
+                        Z**3 + A*Z**2 + B*Z + C = 0
+                            where,
+                                A    = +pp*[epsilon + sigma - ppp]
+                                B    = +pp**2*[ap + sigma*epsilon - (sigma+epsilon)*ppp]
+                                C    = -pp**3*[ap + sigma*epsilon*ppp]
+                                pp   = P*b/(R*T)
+                                ap   = a/(P*b**2)
+                                ppp  = (1+pp)/pp)
+***************************************************************************
+The following private utility methods are available
+***************************************************************************
+__setParameters             : Uses the critical constants to set the parameters of the cubic equation of state specified.
+                                Raises ValueError if the equation of state is not ['SRK','PR']
+__a                         : The a(T) parameter of the equation of state from the equation of state correlations.
+__getlnphi                  : Returns logarithm of the fugacity coefficient as a function of Z, T and P
+***************************************************************************
+The following public methods are available
+***************************************************************************
+getfugacoeff()                : Returns the fugacity coefficient as a function of Z, T and P
+CompressibilityFactors()      : Returns vapour and liquid compressibility factors for a given temperature (K) and pressure (Pa).
+ResidualGibbsEnergy()        : Returns the difference between Gibbs energies of ideal-gas and real gas at given T (K) and P(Pa)
+a()                           : Returns the paramater a(T) needed in Cubic Equations of State
+ResidualEnthalpy          : Returns the departure function for Enthalpy at a given T(K) and P(Pa)
+RealEnthalpy               : Returns the Enthalpy of the real fluid with reference state being an ideal gas at 25 degree centigrade and 1 bar pressure, for which
+H=0
+ResidualEntropy            : Returns Entropy departure function for the real fluid at a given T (K) and P(Pa)
+RealEntropy                : Returns real fluid entropy with reference to S=0 for an ideal gas at 25 degree centigrade and 1 bar pressure.
+PVisotherms                 : Gives isothermal PV plots and the PV saturation curve
+PHisotherms                 : Gives isothermal PH plots and the PH saturation curve
+TSisobars                   : Gives isobaric   TS plots and the TS saturation curve
+Whatsthetemperature         : This function is a crude equation solver used to generate saturation temperature values for the TS isobars.
+VapourPressureEOS           : Returns the Saturation Pressure for a given Temperature from the given Equation of State
+HvapEOS                     : Returns the Enthalpy of Vapourisation for a given Temperature and Pressure from given Cubic Equation of State
+VlsatEOS                    : Returns the Saturated Liquid Phase Volumes for a given Temperature and Saturation Pressure using the Cubic Equation of State
+adjustparams                : Returns optimum value of parameters of given Cubic Equation of States - Modified PR, PRSV1,PRSV2, using a Least Squares Approximation and also plots of Saturation Pressure,
+                              Enthalpy of Vapourization and Saturated Liquid Phase Volume for both adjusted EOS and correlated values.
+plotEOS                     : Returns plots of Vapour Pressure, Enthalpy of Vapourization,Liquid Phase Saturated Volume with Temperature using unoptimized Equation of State and
+                              actual correlated values. 
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">moleculename</span>,
+        <span class="summary-sig-arg">equationofstatename</span>)</span><br />
+      __init__(self, moleculename, equationofstatename):
+    moleculename        = name of the molecule.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#a" class="summary-sig-name">a</a>(<span class="summary-sig-arg">T</span>)</span><br />
+      INPUTS
+        T   = 'bounds'
+            OR
+        T   = Scalar.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.a">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__setParameters"></a><span class="summary-sig-name">__setParameters</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.__setParameters">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#__getlnphi" class="summary-sig-name" onclick="show_private();">__getlnphi</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">Z</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">P</span>)</span><br />
+      Private function.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.__getlnphi">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#getfugacoeff" class="summary-sig-name">getfugacoeff</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">Z</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">P</span>)</span><br />
+      Public function.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.getfugacoeff">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#CompressibilityFactors" class="summary-sig-name">CompressibilityFactors</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">P</span>)</span><br />
+      CompressibilityFactors(T, P):
+    INPUTS
+        T       = Scalar: Temperature in K.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.CompressibilityFactors">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#ResidualGibbsEnergy" class="summary-sig-name">ResidualGibbsEnergy</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">P</span>)</span><br />
+      ResidualGibbsEnergy(T, P):
+    INPUTS
+        T = 'bounds'
+            OR
+        T   = Scalar.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.ResidualGibbsEnergy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#ResidualEnthalpy" class="summary-sig-name">ResidualEnthalpy</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">P</span>,
+        <span class="summary-sig-arg">state</span>)</span><br />
+      ResidualEnthalpy(self,T,P,state):
+    INPUTS</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.ResidualEnthalpy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#RealEnthalpy" class="summary-sig-name">RealEnthalpy</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">P</span>)</span><br />
+      Real Enthalpy(self,T,P)
+INPUTS
+  T = Scalar.Temperature in K
+  P = Scalar.Pressure in Pa
+OUTPUTS
+  Enthalpy H in J/kmol</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.RealEnthalpy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#ResidualEntropy" class="summary-sig-name">ResidualEntropy</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">P</span>,
+        <span class="summary-sig-arg">state</span>)</span><br />
+      ResidualEntropy(self,T,P,state):
+   INPUTS</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.ResidualEntropy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#RealEntropy" class="summary-sig-name">RealEntropy</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">P</span>)</span><br />
+      INPUTS T = Scalar.Temperature in K.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.RealEntropy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#Whatsthetemperature" class="summary-sig-name">Whatsthetemperature</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">value</span>)</span><br />
+      INPUTS Value = Scalar.Pressure in Pa.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.Whatsthetemperature">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#TSisobars" class="summary-sig-name">TSisobars</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">Prange</span>)</span><br />
+      INPUTS
+Prange = [] list of Pressures in Pa
+OUTPUTS
+1.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.TSisobars">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#PHisotherms" class="summary-sig-name">PHisotherms</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">Trange</span>)</span><br />
+      INPUTS
+ Trange = [] list of Temperatures in K.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.PHisotherms">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#PVisotherms" class="summary-sig-name">PVisotherms</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">Trange</span>)</span><br />
+      INPUTS
+ Trange = [] list of Temperatures in K.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.PVisotherms">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#VapourPressureEOS" class="summary-sig-name">VapourPressureEOS</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>)</span><br />
+      INPUTS: Temperature T in K</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.VapourPressureEOS">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#HvapEOS" class="summary-sig-name">HvapEOS</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>)</span><br />
+      INPUTS : Temperature T in K</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.HvapEOS">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#VlsatEOS" class="summary-sig-name">VlsatEOS</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>)</span><br />
+      INPUTS : Temperature T in K</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.VlsatEOS">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#adjustparams" class="summary-sig-name">adjustparams</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">command</span>)</span><br />
+      INPUTS: n  - Number of Data Point</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.adjustparams">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_CubicEquationOfState-class.html#plotEOS" class="summary-sig-name">plotEOS</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">n</span>)</span><br />
+      INPUTS : n - Number of Data Points</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.plotEOS">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="mastersource.Molecule-class.html">Molecule</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#EnthalpyIdealGas" class="summary-sig-name">EnthalpyIdealGas</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">der</span>)</span><br />
+      If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.EnthalpyIdealGas">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#EnthalpyVapourization" class="summary-sig-name">EnthalpyVapourization</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">der</span>)</span><br />
+      If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.EnthalpyVapourization">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#EntropyIdealGasReference" class="summary-sig-name">EntropyIdealGasReference</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">der</span>)</span><br />
+      If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.EntropyIdealGasReference">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#GibbsEnergyIdealGasReference" class="summary-sig-name">GibbsEnergyIdealGasReference</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">der</span>)</span><br />
+      If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.GibbsEnergyIdealGasReference">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#LiquidDensity" class="summary-sig-name">LiquidDensity</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">der</span>)</span><br />
+      LiquidDensity(T):
+     If T == 'bounds', then returns a list [Tmin, Tmax] which are the bounds of the correlation
+     If T is a float, 
+         then if der = 0:
+             returns liquid density (kmol/m3) at the value of T in K
+         if der = 1:
+             returns first derivative of liquid density wrt.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.LiquidDensity">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#SpecificHeatCapacity" class="summary-sig-name">SpecificHeatCapacity</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">der</span>)</span><br />
+      If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.SpecificHeatCapacity">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule-class.html#VapourPressure" class="summary-sig-name">VapourPressure</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">der</span>)</span><br />
+      If T is 'bounds', returns a list [Tmin, Tmax] which are the temperature bounds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule.VapourPressure">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">moleculename</span>,
+        <span class="sig-arg">equationofstatename</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+__init__(self, moleculename, equationofstatename):
+    moleculename        = name of the molecule.  Is a string.  Molecule data is in [moleculename].txt
+    equationofstatename = name of the equation of state.  Is a string: either 'SRK' or 'PR'
+The __init__ function also initializes the parent class which is Molecule with:
+    Molecule.__init__(self, moleculename)
+
+</pre>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="mastersource.Molecule-class.html#__init__">Molecule.__init__</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="a"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">a</span>(<span class="sig-arg">T</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.a">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+    INPUTS
+        T   = 'bounds'
+            OR
+        T   = Scalar. Temperature in K
+    OUTPUTS
+        if T == 'bounds':
+            returns [Tmin, Tmax] which are the temperature bounds for a.
+        else:
+            returns a - the Cubic Equation of State a parameter
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="__getlnphi"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__getlnphi</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">Z</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">P</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.__getlnphi">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Private function.
+    INPUTS
+        Z       = compressibility factor
+        T       = Temperature (K)
+        P       = Pressure (Pa)
+    OUTPUT
+        lnphi   = logarithm of the fugacity coefficient.
+                = Z - 1 - ln(Z-pp) + ap*pp/(sigma-epsilon)*ln[(Z+pp*epsilon)/(Z+pp*sigma)]
+            where,
+                    pp  =   P*b/(R*T)
+                    ap  =   a/(P*b**2)
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getfugacoeff"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getfugacoeff</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">Z</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">P</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.getfugacoeff">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Public function.
+    INPUTS
+        Z       = compressibility factor
+        T       = Temperature (K)
+        P       = Pressure (Pa)
+    OUTPUT
+        phi   = fugacity coefficient.
+                = exp(Z - 1 - ln(Z-pp) + ap*pp/(sigma-epsilon)*ln[(Z+pp*epsilon)/(Z+pp*sigma)])
+            where,
+                    pp  =   P*b/(R*T)
+                    ap  =   a/(P*b**2)
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="CompressibilityFactors"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">CompressibilityFactors</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">P</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.CompressibilityFactors">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+CompressibilityFactors(T, P):
+    INPUTS
+        T       = Scalar: Temperature in K.
+        P       = Scalar: Pressure in Pa
+    OUTPUTS
+        ZG, ZL
+            ZG  = Vapour/Gas Compressibility Factor
+            ZL  = Liquid Compressibility Factor
+        If T &gt; CriticalTemperature, ZG = ZL.                
+Z = PV/RT        
+The compressibility factors are obtained by solving the following cubic:
+    Z**3 + A*Z**2 + B*Z + C = 0
+        where,
+            A    =  pp*(epsilon + sigma - ppp)
+            B    =  pp**2*[ap + epsilon*sigma - (epsilon+sigma)*ppp]
+            C    = -pp**3*[ap + epsilon*sigma*ppp]
+            ap   =  a/(P*b**2)
+            pp   =  P*b/(R*T)
+            ppp  =  (1 + pp)/pp
+If T &lt; Critical Temperature, there are 3 real roots.  The maximum is ZG, minimum is ZL.  Middle root is discarded.
+If T &gt; Critical Temperature, there is  only 1 real root and ZG = ZL.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="ResidualGibbsEnergy"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">ResidualGibbsEnergy</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">P</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.ResidualGibbsEnergy">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+ResidualGibbsEnergy(T, P):
+    INPUTS
+        T = 'bounds'
+            OR
+        T   = Scalar. Temperature in K
+        P   = Scalar. Pressure in Pa
+        
+    OUTPUTS
+        If T == 'bounds':
+            [Tmin, Tmax]
+        else:
+            GR  = Residual Gibbs Energy for Pure Component
+Hence,
+    GR = ResidualGibbsEnergy(T, P)
+        OR
+    [Tmin, Tmax] = ResidualGibbsEnergy('bounds',junk)
+
+The fugacity coefficient 'phi' is a measure of the residual Gibbs energy of the system due to non-ideal behaviour.
+GR  =   G - Gig = RT*ln(phi)
+        where,
+            Gig = Gfig + (H - Hfig) - T*(S - Sreference)@(Pref=101,325Pa) + R*T*ln(P/Pref) 
+                = Gig@Pref + R*T*ln(P/Pref)
+                = self.GibbsEnergyIdealGasReference(T) + R*T*ln(P/Pref)
+If P &lt; Psat, the fugacity coefficient is given by:
+    ap      = a/(P*b**2)
+    pp      = P*b/(R*T)
+    ln(phi) = Z - 1 - ln(Z-pp) + ap*pp/(sigma-epsilon)*ln[(Z+pp*epsilon)/(Z+pp*sigma)]
+If P &gt; Psat, the fugacity coefficient is given by:
+    ln(phi) = ln(phi_Psat) + VL(P-Psat)/RT - ln(P/Psat)
+GR = R*T*ln(phi)
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="ResidualEnthalpy"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">ResidualEnthalpy</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">P</span>,
+        <span class="sig-arg">state</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.ResidualEnthalpy">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+  ResidualEnthalpy(self,T,P,state):
+    INPUTS
+        
+        T   = Scalar. Temperature in K
+        P   = Scalar. Pressure in Pa
+        state='liquid' OR 'vapour'
+    OUTPUTS
+       HR  = Residual Gibbs Energy for Pure Component in J/kmol
+Hence,
+    HR = ResidualGibbsEnergy(T, P)
+    HR = R*T*(Z-1)+(T*da/dT-a)/((sigma-epsilon)*b)*(ln((Z+sigma*pp)/(Z+epsilon*pp)))
+    pp=Pb/RT
+    where Z=ZL if 'liquid'
+    Z=ZG if 'vapour'
+    ZG,ZL are obtained from self.CompressibilityFactors(T,P)
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="RealEnthalpy"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">RealEnthalpy</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">P</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.RealEnthalpy">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Real Enthalpy(self,T,P)
+INPUTS
+  T = Scalar.Temperature in K
+  P = Scalar.Pressure in Pa
+OUTPUTS
+  Enthalpy H in J/kmol
+
+Reference Thermodynamic State is ideal gas at 298.16 K and 100000 Pa
+
+H(T,P)-Hig(298K,100000Pa)=(Hig(T,P)-Hig(298K,100000Pa))+HR(T,P))
+
+Therefore, Real Enthalpy=HR(T,P)+integral(cpig)dT(298K,T)
+
+Enthalpy difference w.r.t. Reference Thermodynamic State is obtained
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="ResidualEntropy"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">ResidualEntropy</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">P</span>,
+        <span class="sig-arg">state</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.ResidualEntropy">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+ResidualEntropy(self,T,P,state):
+   INPUTS
+       
+       T   = Scalar. Temperature in K
+       P   = Scalar. Pressure in Pa
+       state='liquid' OR 'vapour'
+   OUTPUTS
+      SR  = Residual Entropy for Pure Component in J/kmolK
+Hence,
+   HR = Residual Enthalpy
+   HR = R(Z-pp)+(da/dT)/((sigma-epsilon)*b)*(ln((Z+sigma*pp)/(Z+epsilon*pp)))
+   where Z=ZL if 'liquid'
+   Z=ZG if 'vapour'
+   pp=Pb/RT
+   ZG,ZL are obtained from self.CompressibilityFactors(T,P)
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="RealEntropy"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">RealEntropy</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">P</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.RealEntropy">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>INPUTS T = Scalar.Temperature in K. P = Scalar.Pressure in Pa.</p>
+  <p>Reference Thermodynamic State is ideal gas at 298K and 100000 Pa.</p>
+  <p>Real Entropy 
+  S(T,P)-Sig(298K,100000)=(Sig(T,P)-Sig(298K,100000))+SR(T,P))</p>
+  <p>Therefore, Real Entropy 
+  =SR(T,P)+integral(cpig/T)dT(25deg,T)-R*ln(P/1bar)</p>
+  <p>Entropy Difference is obtained w.r.t. Reference Thermodynamic 
+  State</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="Whatsthetemperature"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">Whatsthetemperature</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">value</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.Whatsthetemperature">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>INPUTS Value = Scalar.Pressure in Pa. OUTPUTS T in K = Temperature 
+  corresponding to a VapourPressure = Value Pa.</p>
+  <p>The function evaluates the Temperature using the fsolve method in 
+  scipy module function ff(T): y= VapourPressure at Temperature T 
+  error=scipy.fabs(value-y) return error</p>
+  <p>the Temperature is obtained as T=scipy.optimize.fsolve(ff,guess)</p>
+  <p>Guess: Guess Temperature in K</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="TSisobars"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">TSisobars</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">Prange</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.TSisobars">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUTS
+Prange = [] list of Pressures in Pa
+OUTPUTS
+1. Saturation Curve:
+
+Generates the Saturation T-S envelope for a range of Temperatures in K.
+
+Range = [Tmin,Tmax,1000 data points]
+Tmin = Reference Temperature in K
+Tmax = Critical Temperature in K
+for some T in Range
+Compute Vapour Pressure Psat in Pa
+Compute &lt;RealEntropy (T,Psat)&gt; for all T in Range
+Plot a graph of Range vs.  &lt;RealEntropy (T,Psat)&gt; 
+
+2. Isobars
+
+Generates constant pressure T-S curves for all Pressures in Prange
+
+For a P in Prange 
+
+Compute Whatsthetemperature(P) = Tsat in K
+ For a T in the Range of Temperature : 
+ Compute &lt;RealEntropy 'Vapour'(T,P)&gt; if T&gt;Tsat
+ &lt;RealEntropy 'Liquid'(T,P)&gt; if T&lt;=Tsat
+ Plot a graph of Range vs. RealEntropy values.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="PHisotherms"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">PHisotherms</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">Trange</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.PHisotherms">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUTS
+ Trange = [] list of Temperatures in K.
+ OUTPUTS
+ 1. Saturation Curve:
+ 
+ Generates the Saturation P-H envelope for a range of Temperatures in K.
+ 
+ Range = [Tmin,Tmax,1000 data points]
+ Tmin = Refernce Temperature in K
+ Tmax = Critical Temperature in K
+ for some T in Range
+ Compute Vapour Pressure Psat in Pa
+ Compute &lt;RealEnthalpy (T,Psat)&gt; for all T in Range
+ Plot a graph of Vapour Pressure vs.  &lt;RealEnthalpy (T,Psat)&gt; 
+ 
+ 2. Isotherms
+ 
+ Generates constant temperature P-H curves for all Temperatures in Trange
+ 
+ For a T in Trange 
+ 
+ Compute Vapour Pressure = Psat in Pa
+  For a P in the Range of Pressure : 
+  Compute &lt;RealEnthalpy 'Vapour'(T,P)&gt; if P&lt;=Psat
+  &lt;RealEnthalpy 'Liquid'(T,P)&gt; if P&gt;Psat
+  Plot a graph of Range vs. &lt;RealEnthalpy&gt; values.
+ 
+ 
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="PVisotherms"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">PVisotherms</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">Trange</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.PVisotherms">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUTS
+ Trange = [] list of Temperatures in K.
+ OUTPUTS
+ 1. Saturation Curve:
+ 
+ Generates the Saturation P-V envelope for a range of Temperatures in K.
+ 
+ Range = [Tmin,Tmax,1000 data points]
+ Tmin = Refernce Temperature in K
+ Tmax = Critical Temperature in K
+ for some T in Range
+ Compute Vapour Pressure Psat in Pa
+ Compute &lt;CompressibilityFactors(T,Psat)&gt; for all T in Range
+ Convert &lt;CompressibilityFactors(T,Psat)&gt; to volumes.
+ 
+ Plot a graph of Vapour Pressure vs.  Volumes
+ 
+ 2. Isotherms
+ 
+ Generates constant temperature P-V curves for all Temperatures in Trange
+ 
+ For a T in Trange 
+ 
+ Compute Vapour Pressure = Psat in Pa
+  For a P in the Range of Pressure : 
+  Compute &lt;CompressibilityFactors(T,P)[0]&gt; if P&lt;=Psat
+  &lt;CompressibilityFactors(T,P)[1])&gt; if P&gt;Psat
+  Convert &lt;CompressibilityFactors&gt; to volumes.
+  Plot a graph of Range vs. Volume values.
+ 
+ 
+ Curves are plotted as P vs logV for the sake of clarity.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="VapourPressureEOS"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">VapourPressureEOS</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.VapourPressureEOS">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>INPUTS: Temperature T in K</p>
+  <p>OUTPUT: Vapour Pressure at T in Pa.</p>
+  <p>The Vapour Pressure Psat is given by the equation</p>
+  <p>lnphi(Zl,T,Psat)=lnphi(Zg,T,Psat)</p>
+  <p>Where Zg, Zl = CompressibilityFactors(T,Psat)</p>
+  <p>Define function funn(P) that computes Zg,Zl = 
+  CompressibilityFactors(T,P)</p>
+  <p>and returns error = exp(lnphi(Zg,T,P))-exp(lnphi(Zl,T,P))</p>
+  <p>The Vapour Pressure Psat = scipy.optimize.fsolve(funn,guess)</p>
+  <p>Where guess is suitable guess Pressure in Pa.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="HvapEOS"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">HvapEOS</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.HvapEOS">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>INPUTS : Temperature T in K</p>
+  <p>OUTPUTS : Enthalpy of Vapourization Hsat in J/kmol</p>
+  <p>Vapour Pressure Psat is evaluated using the method 
+  VapourPressureEOS(T)</p>
+  <p>Hsat is then given by :</p>
+  <p>Hsat = ResidualEnthalpy(T,Psat,'vapour') - 
+  ResidualEnthalpy(T,Psat,'liquid')</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="VlsatEOS"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">VlsatEOS</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.VlsatEOS">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>INPUTS : Temperature T in K</p>
+  <p>OUTPUTS : Liquid Phase Volume Vlsat in m3/kmol at T and Psat Pa</p>
+  <p>Vapour Pressure Psat is evaluated using the method 
+  VapourPressureEOS(T)</p>
+  <p>Vlsat is then given by</p>
+  <p>Vlsat = Zlsat*R*T/Psat</p>
+  <p>Where Zgsat, Zlsat = CompressibilityFactors(T,Psat)</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="adjustparams"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">adjustparams</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">n</span>,
+        <span class="sig-arg">command</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.adjustparams">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUTS: n  - Number of Data Point
+
+command : either 'plot' or 'none'
+
+This function optimizes the adjustable parameters in the Equations Of State :
+
+1)PRSV1
+2)PRSV2 
+3)Modified PR
+
+Optimization is based on the following Pure Component Properties :
+
+1) Vapour Pressure Psat
+
+2)Enthalpy of Vapourization Hsat
+
+3)Saturated Liquid Phase Volume Vlsat
+
+Range = [Tmin,Tmax,n]
+
+Where Tmin - Lower Bound for correlations for 1), 2) and 3) in K
+      Tmax - Upper bound in K
+Define function fgenerror where:
+For T in Range, correlated Psat, Hsat, Vlsat are calculated using the following methods:
+
+1) VapourPressure(T,0) (Pa)
+2)EnthalpyVapourization(T,0) (J/kmol)
+3)LiquidDensity(T,0) (m3/kmol)
+
+The properties are also calculated using equations for state : 
+
+1)VapourPressureEOS(T)
+2)HsatEOS(T)
+3)VlsatEOS(T)
+
+Error calculated as Property(T,0) - PropertyEOS(T,0) for 1), 2) and 3) and stored in list err[]
+
+List of errors is returned.
+The optimized parameters pls are obtained as 
+
+pls = scipy.optimize.leastsq(fgenerror,p0,args)
+
+
+Where p0 is guess value vector for parameters
+
+If command == 'plot' , the graphs of actual values and adjusted values vs T is generated
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="plotEOS"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">plotEOS</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">n</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#Molecule_CubicEquationOfState.plotEOS">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>INPUTS : n - Number of Data Points</p>
+  <p>OUTPUTS : Graphs of 1) Vapour Pressure (Pa) vs T in K 2) Enthalpy of 
+  Vapourization (J/kmol) vs T in K</p>
+  <p>3) Saturated Liquid Phase Molar Volume (m3/kmol) vs T in K</p>
+  <p>For T in Trange = [Tmin,Tmax] with n Data Points</p>
+  <p>The graphs are plotted for 1),2) and 3) for values calculated by 
+  correlations and</p>
+  <p>those obtained by EquationOfState at all n Temperatures</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="mastersource-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Apr 06 17:11:42 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

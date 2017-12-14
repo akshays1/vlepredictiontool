@@ -1,0 +1,1172 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>mastersource.WongSandlerVLE</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="mastersource-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="mastersource-module.html">Module&nbsp;mastersource</a> ::
+        Class&nbsp;WongSandlerVLE
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="mastersource.WongSandlerVLE-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class WongSandlerVLE</h1><p class="nomargin-top"><span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+<a href="mastersource.Molecule_UNIQUAC-class.html">Molecule_UNIQUAC</a> --+
+                   |
+                  <strong class="uidshort">WongSandlerVLE</strong>
+</pre>
+
+<hr />
+<pre class="literalblock">
+
+This class contains all the attributes and methods required to perform the Equation of State based Vapour Liquid Equilibrium calculation for a mixture of non - electrolytic, non - aggregative molecules.
+
+The 'WongSandlerVLE' class inherits all the parameters and functions from the 'Molecule_UNIQUAC' parent class, whose methods are used in evaluating liquid phase interaction parameters; Other activity co-efficient models and their modules will be incorporated to aid accurate calculations.
+The class requires the names of the molecules in the stream, the equation of state name: either 'PRSV1'or 'PRSV2' or 'Modified PR' for Peng-Robinson.
+
+***************************************************************************
+    The following are the SCALAR attributes of this class:
+***************************************************************************  
+yguess              : The dictionary list of the guess values of the vapor phase mole fraction of the compounds given
+pguess              : The guess value of pressure for calculations
+objects             : The list of instances of class Molecule_CubicEquationOfState which enable us to obtain pure fluid thermodynamic properties.
+eosname             : The name of the Equation of State being used
+listk               : The list of the k values to be used in Wong Sandler method
+T           : The temperature input at which the calculations are to be carried out given by the user.
+
+
+***************************************************************************
+    The following private utility methods are available
+***************************************************************************
+__createobjectslist         :       creates a dictionary list of compounds in the stream alongwith their properties by calling adjustparams from class Molecule_CubicEquationOfState
+__guesstimates              :       Requires obj as the list of instances of class Molecule_CubicEquationOfState 
+                                     comp as list of liquis phase compositions in the inlet
+                                    Assigns the guess value of Pressure as the sum of the products of mole fraction of components and their vapour pressures at the given temperature
+                                    Uses function getfugacoeff() of Molecule_CubicEquationOfState to calculate the fugacity coefficients in the vapor and the liquid phase which is then used to caluclate the guess values of                      the vapor phase mole fraction as per:
+                            yi*phiv = xi*phil                               
+                    
+
+ ***************************************************************************
+    The following public methods are available
+ ***************************************************************************
+createk             :       Creates a list of k values 'listk' for the compounds in the componentlist as per: If p and q are two species in the stream then:
+                            kp = 1 - [(bq-aq/(R*T))*((gamainp+lphip-Mp)/(Zq-1))+bq*(1+gamainp/c-ap/(bp*R*T))]/[bp-ap/(R*T)+bq-aq/(R*T)]
+                            kq = 1 - [(bp-ap/(R*T))*((gamainq+lphiq-Mq)/(Zp-1))+bp*(1+gamainq/c-aq/(bq*R*T))]/[bp-ap/(R*T)+bq-aq/(R*T)]                     
+                    where   Mp = -log(((Vq-bq)*Zq)/Vq)+(1.0/(e-s))*((ap/(bp*R*T))-(gamainp)/c)*(scipy.log((Vq+s*bq)/(Vq+e*bq)))     
+                            Mq = -log(((Vp-bp)*Zp)/Vp)+(1.0/(e-s))*((aq/(bq*R*T))-(gamainq)/c)*(scipy.log((Vp+s*bp)/(Vp+e*bp)))     
+                            s = sigma 
+                                e = epsilon
+
+getkpq              :       Creates a list of kpq values 'listk1' based on the k values in listk for all the compounds present in the stream(to calculate Epq):
+                            kpq = kp*xq + kq*xp
+                    
+
+getepq              :       Creates a list of Epq values in 'listepq' for for the compounds in the componentlist (to calculate the parameter D) as per:
+                            Epq = 0.5*(bp-ap/(R*T)+bq-aq/(R*T))*(1-kpq)
+
+getD                :       Gets the value of D to be used for calculation of parameters a and b:
+                            D=1+(Gexcess/(c*R*T))-sum (xp*(ap/(bp*R*T))
+
+mixingrules :       Gets the values of mixing parameters a and b for the given mixture:
+                            bmix = (1/D)*sum(xp*xq*Epq)
+                            amix = bmix*R*T*(1-D)
+
+bbars               :       Creates a list of the values of partial parameter bbar for each component in the stream:
+                For any two species i and j:
+                            bbar = (1/D)*(2*sum(xj*Eij)-bmix*(1+(ln(gamma(i))/c)-a(i)/(b(i)*R*T)))
+
+abars               :       Creates a list of the values of partial parameter abar for each component in the stream:
+                For any two species i and j:
+                            abar = bmix*R*T*(ai/(bi*R*T)-ln(gamma(i))/c)+amix*(bi/bmix-1)   
+                
+mixturevolume       :       Returns the volume of the mixture V after caluclating the compressibility factor Z :
+                    The equation of state can be cast in the form of a cubic equation in the compressibility Z = PV/RT
+                                                    Z**3 + A*Z**2 + B*Z + C = 0
+                    where,  pp   = P*b/(R*T)
+                                            ppp  = (1.0 + pp)/pp
+                                        ap   = a/(P*b**2)
+                                        A =  pp*(epsilon + sigma - ppp)
+                            B =  pp**2*(ap + sigma*epsilon - (epsilon + sigma)*ppp)
+                                        C = -pp**3*(ap + sigma*epsilon*ppp) 
+
+phibars             :       Returns the list of activity coeffient phibar for each component which is calculated as:
+                            xx=(amix/(b*R*T))/(epsilon-sigma)
+                yy=1+abar/amix-bbar/bmix
+                    zz=log((V+sigma*bmix)/(V+epsilon*bmix))
+                    lnphibars=(bbar/bmix)*(Z-1)-log((V-bmix)*Z/V)+xx*yy*zz
+                    phibars=exp(lnphibars)
+
+doVLEcalc   :       Requires inlet liquid phase mole fractions as a list
+                        Returns the vapor phase mole fractions and the equilibrium pressure in Pascals
+
+doflashcalc :       Requires inlet composition of compounds and the final pressure as input variables
+                        Returns the fraction of feed vapourized, amount in liquid phase and amount in vapour
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.WongSandlerVLE-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">componentlist</span>,
+        <span class="summary-sig-arg">eosname</span>,
+        <span class="summary-sig-arg">T</span>)</span><br />
+      INPUT : componentlist : list of components in the stream...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__createobjectslist"></a><span class="summary-sig-name">__createobjectslist</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      creates a dictionary list of compounds in the stream alongwith their 
+      properties CALLS :   adjustparams from class 
+      Molecule_CubicEquationOfState</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.__createobjectslist">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.WongSandlerVLE-class.html#__guesstimates" class="summary-sig-name" onclick="show_private();">__guesstimates</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">obj</span>,
+        <span class="summary-sig-arg">comp</span>)</span><br />
+      INPUT: obj                      :list of compounds in the stream as objects of class Molecule...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.__guesstimates">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.WongSandlerVLE-class.html#createk" class="summary-sig-name">createk</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      CALLS : VapourPressure:calculates the vapour pressure of the component at the given temperature through its respective class instance</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.createk">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.WongSandlerVLE-class.html#get_kpq" class="summary-sig-name">get_kpq</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT   : compp       : List of mole fractions of each species in mixture.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.get_kpq">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.WongSandlerVLE-class.html#get_epq" class="summary-sig-name">get_epq</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">comp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT   : compp       : List of mole fractions of each species in mixture.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.get_epq">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.WongSandlerVLE-class.html#getD" class="summary-sig-name">getD</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT   : compp       : List of mole fractions of each species in mixture.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.getD">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.WongSandlerVLE-class.html#mixingrules" class="summary-sig-name">mixingrules</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT   : compp       : List of mole fractions of each species in mixture.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.mixingrules">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.WongSandlerVLE-class.html#bbars" class="summary-sig-name">bbars</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">comp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT   : compp       : List of mole fractions of each species in mixture.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.bbars">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.WongSandlerVLE-class.html#abars" class="summary-sig-name">abars</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">comp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT   : compp       : List of mole fractions of each species in mixture.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.abars">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.WongSandlerVLE-class.html#mixturevolume" class="summary-sig-name">mixturevolume</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">comp</span>,
+        <span class="summary-sig-arg">state</span>,
+        <span class="summary-sig-arg">P</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT   : 
+          comp      : List of mole fractions of each species in mixture.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.mixturevolume">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.WongSandlerVLE-class.html#phibars" class="summary-sig-name">phibars</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">comp</span>,
+        <span class="summary-sig-arg">state</span>,
+        <span class="summary-sig-arg">P</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT   : comp      : List of mole fractions of each species in mixture.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.phibars">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.WongSandlerVLE-class.html#doVLEcalc" class="summary-sig-name">doVLEcalc</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">compositions</span>)</span><br />
+      INPUT   : compositions :the liquid phase composition of compounds in the inlet</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.doVLEcalc">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.WongSandlerVLE-class.html#doflashcalc" class="summary-sig-name">doflashcalc</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">feed</span>,
+        <span class="summary-sig-arg">initcomp</span>,
+        <span class="summary-sig-arg">finalP</span>)</span><br />
+      INPUT   : feed       : Amount liquid feed initially present.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.doflashcalc">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="mastersource.Molecule_UNIQUAC-class.html">Molecule_UNIQUAC</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#checklist" class="summary-sig-name">checklist</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">complist</span>)</span><br />
+      INPUTS</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.checklist">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#createlists" class="summary-sig-name">createlists</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">compositionlist</span>,
+        <span class="summary-sig-arg">mode</span>)</span><br />
+      INPUTS compositionlist : that is a list of the liquid phase 
+      composition (molefraction or x) of the mixture</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.createlists">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getGamma" class="summary-sig-name">getGamma</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : float T ; Temperature in Kelvin
+        list compp ; liquid phase composition in molefraction</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGamma">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getGammaComb" class="summary-sig-name">getGammaComb</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : float T ; Temperature in Kelvin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGammaComb">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getGammaInfDil" class="summary-sig-name">getGammaInfDil</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">name</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : float T ; Temperature in Kelvin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGammaInfDil">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getGammaRes" class="summary-sig-name">getGammaRes</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : float T ; Temperature in Kelvin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGammaRes">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getGex" class="summary-sig-name">getGex</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : float T ; Temperature in Kelvin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGex">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getGexComb" class="summary-sig-name">getGexComb</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : list compp : composition in mole fraction</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGexComb">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getGexRes" class="summary-sig-name">getGexRes</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">compp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : list compp ; composition in mole fraction</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getGexRes">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getPhi" class="summary-sig-name">getPhi</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">comp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : list comp ; composition in mole fraction
+        ll (mode) : Either '0' or '1'</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getPhi">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getTau" class="summary-sig-name">getTau</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>)</span><br />
+      INPUT : T ; Temperature in Kelvin</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getTau">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getTheta" class="summary-sig-name">getTheta</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">comp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : list comp ; composition in mole fraction
+        ll(mode): Either '0' or '1'</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getTheta">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="mastersource.Molecule_UNIQUAC-class.html#getThetad" class="summary-sig-name">getThetad</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">comp</span>,
+        <span class="summary-sig-arg">ll</span>)</span><br />
+      INPUT : list comp ; composition in mole fraction
+        ll(mode): Either '0' or '1'</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="mastersource-pysrc.html#Molecule_UNIQUAC.getThetad">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">componentlist</span>,
+        <span class="sig-arg">eosname</span>,
+        <span class="sig-arg">T</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT : componentlist : list of components in the stream
+        eosname       : the equation of state name: either 'PRSV1'or 'PRSV2' or 'Modified PR' for Peng-Robinson
+        T             : the temperature at which the calculations are to be carried out
+CALLS:  createk     : to calculate values of k
+
+</pre>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="mastersource.Molecule_UNIQUAC-class.html#__init__">Molecule_UNIQUAC.__init__</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="__guesstimates"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__guesstimates</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">obj</span>,
+        <span class="sig-arg">comp</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.__guesstimates">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT: obj                      :list of compounds in the stream as objects of class Molecule
+       comp                     :liquid phase compositions of each compound in the stream
+CALLS: VapourPressure       :calculates the vapour pressure of the component at the given temperature
+       CompressibilityFactors :calculates the compressibility factors of the compound at the given temperature and pressure
+       getfugacoeff           :calculates the fugacity coefficients at the given temperature and pressure
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="createk"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">createk</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.createk">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+CALLS : VapourPressure:calculates the vapour pressure of the component at the given temperature through its respective class instance
+        
+        CompressibilityFactors :calculates the compressibility factors of the compound at the given temperature and pressure using its class instance
+        
+        getfugacoeff:calculates the fugacity coefficients at the given temperature and pressure with its class instance.
+        
+        getGammaInfDil  :from Molecule_UNIQUAC to calculate the activity coefficient at infinite dilution with its class instance.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_kpq"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_kpq</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">compp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.get_kpq">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT   : compp       : List of mole fractions of each species in mixture.
+          ll          : Mode, may take '0' or '1'
+CALLS   : createlists : Converts the list of compositions to a dictionary form.
+RETURNS : list of kpq values for the compounds in the stream
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_epq"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_epq</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">comp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.get_epq">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT   : compp       : List of mole fractions of each species in mixture.
+          ll          : Mode, may take '0' or '1'
+CALLS   : get_kpq     :creates a list of kpq values for compounds in the stream
+RETURNS : list of Epq values for the compounds in the stream
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getD"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getD</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">compp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.getD">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT   : compp       : List of mole fractions of each species in mixture.
+          ll          : Mode, may take '0' or '1'
+CALLS   : get_kpq    :creates a list of kpq values for compounds in the stream
+          get_epq    :creates a list of Epq values for compounds in the stream
+          createlists:
+          getGex    : Returns the excess Gibb's Energy of mixing for the mixture at the given Temperature in J/kmol
+RETURNS : D value for the compounds in the stream
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="mixingrules"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">mixingrules</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">compp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.mixingrules">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT   : compp       : List of mole fractions of each species in mixture.
+          ll          : Mode, may take '0' or '1'
+CALLS   : get_kpq    :creates a list of kpq values for compounds in the stream
+          get_epq    :creates a list of Epq values for compounds in the stream
+          createlists:
+          getD     :gives the D value for the compounds in the stream
+RETURNS : mixing parameters amix, bmix for the compounds in the stream
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="bbars"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">bbars</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">comp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.bbars">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT   : compp       : List of mole fractions of each species in mixture.
+          ll          : Mode, may take '0' or '1'
+CALLS   : getD     :gives the D value for the compounds in the stream
+          get_epq    :creates a list of Epq values for compounds in the stream
+          mixingrules:gives the amix, bmix values for the compounds in the stream
+          createlists: Converts the list of compositions to a dictionary form. 
+          getGamma   : returns the activity co-efficients dictionary for the mixture
+RETURNS : bbars        :list of partial parameter bbar for the compounds in the stream
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="abars"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">abars</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">comp</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.abars">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT   : compp       : List of mole fractions of each species in mixture.
+          ll          : Mode, may take '0' or '1'
+CALLS   : getD       :gives the D value for the compounds in the stream
+          get_epq    :creates a list of Epq values for compounds in the stream
+          mixingrules:gives the amix, bmix values for the compounds in the stream
+          createlists:Converts the list of compositions to a dictionary form.
+          bbars     : returns list of partial parameter bbar for the compounds in the stream
+          getGamma   : returns the list of activity coefficients for each component in the mixture
+RETURNS : abars        :list of partial parameter abar for the compounds in the stream
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="mixturevolume"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">mixturevolume</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">comp</span>,
+        <span class="sig-arg">state</span>,
+        <span class="sig-arg">P</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.mixturevolume">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT   : 
+          comp      : List of mole fractions of each species in mixture.
+          ll          : Mode, may take '0' or '1'
+          state        : Either 'liquid' or 'vapour'
+          P            : the given pressure in Pa 
+CALLS   : mixingrules:gives the amix, bmix values for the compounds in the stream
+          Utilities.cubicsolver: gives the solution to a cubic equation on passing the coefficients A,B,C
+RETURNS : V            : the volume of the mixture 
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="phibars"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">phibars</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">comp</span>,
+        <span class="sig-arg">state</span>,
+        <span class="sig-arg">P</span>,
+        <span class="sig-arg">ll</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.phibars">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT   : comp      : List of mole fractions of each species in mixture.
+          ll          : Mode, may take '0' or '1'
+          P            : the given pressure in Pa 
+CALLS   : mixingrules:gives the amix, bmix values for the compounds in the stream
+          bbars     :returns the partial parameter bbar list of compounds
+          abars      :returns the partial parameter abar list of compounds
+RETURNS : phibars      :the fugacity coefficient 
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="doVLEcalc"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">doVLEcalc</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">compositions</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.doVLEcalc">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT   : compositions :the liquid phase composition of compounds in the inlet
+  
+CALLS   : createk     :returns the list of kp and kq value for the given compounds
+          __guesstimates: Calls the function that calculates the guess values for vapour phase mole fraction and saturation pressure and calculates self.pguess and self.yguess
+          phibars     : List of mixture fugacity co-efficients for each component in the mixture
+          createlists : Converts a list of mole fractions to dictionary
+RETURNS : endd          : List of equilibrium vapour phase mole fractions and bubble pressure in Pa.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="doflashcalc"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">doflashcalc</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">feed</span>,
+        <span class="sig-arg">initcomp</span>,
+        <span class="sig-arg">finalP</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="mastersource-pysrc.html#WongSandlerVLE.doflashcalc">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+INPUT   : feed       : Amount liquid feed initially present.
+          initcomp   : List of mole fractions of all components in input to flasher.
+          finalP     : Final Equilibrium Pressure in Pa.
+          
+CALLS   : createlists           : Converts the list of mole fractions to dictionary form.
+          CompressibilityFactors :calculates the compressibility factors at the given T and P
+          getfugacoeff           :Calculates the pure component fugacity coefficient for each species in the mixture.
+          phibars               : Returns the fugacity coefficient in mixture of each component (phibar)
+RETURNS : xx         : Liquid phase mole fractions 
+          yy         : Vapour phase mole fractions 
+          ff         : Amounts of liquid and vapour present after flashing.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="mastersource-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Apr 06 17:11:42 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
